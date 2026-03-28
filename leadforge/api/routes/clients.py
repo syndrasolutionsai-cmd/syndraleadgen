@@ -33,3 +33,13 @@ async def create_client(payload: ClientCreate, db: AsyncSession = Depends(get_db
 @router.get("/me", response_model=ClientRead)
 async def get_me(current: Client = Depends(get_current_client)):
     return current
+
+
+@router.get("/all", response_model=list[ClientRead])
+async def list_all_clients(
+    current: Client = Depends(get_current_client),
+    db: AsyncSession = Depends(get_db),
+):
+    """Admin: list all client accounts."""
+    result = await db.execute(select(Client).order_by(Client.created_at.desc()))
+    return result.scalars().all()
