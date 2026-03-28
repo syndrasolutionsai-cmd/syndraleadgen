@@ -3,7 +3,7 @@ from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEV_SECRET = "dev-secret-key-change-in-production-min-32-chars"
-DEV_ENC_KEY = "dev-enc-key-32b-base64-placeholder="
+DEV_ENC_KEY = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="  # 32 zero-bytes, dev only
 
 
 class Settings(BaseSettings):
