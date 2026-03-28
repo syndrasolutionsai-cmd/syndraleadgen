@@ -4,6 +4,7 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
+      # Dev-only defaults — override with real credentials in production
       POSTGRES_USER: leadforge
       POSTGRES_PASSWORD: leadforge
       POSTGRES_DB: leadforge
