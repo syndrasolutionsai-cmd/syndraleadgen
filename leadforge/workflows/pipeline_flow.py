@@ -1,8 +1,10 @@
 # leadforge/workflows/pipeline_flow.py
 import uuid
 from prefect import flow, task, get_run_logger
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from leadforge.database import AsyncSessionLocal
 from leadforge.workflows.scraping_flow import run_scraping_flow
 from leadforge.verification.chain import VerificationChain
 from leadforge.personalization.pipeline import PersonalizationPipeline
@@ -11,6 +13,18 @@ from leadforge.models.prospect import Prospect
 from leadforge.models.email import Email, EmailStatus
 from leadforge.scraping.aggregator import MergedProspect
 from leadforge.config import settings
+
+
+async def _set_status(campaign_id: str, status: str) -> None:
+    from leadforge.models.campaign import Campaign
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(Campaign).where(Campaign.id == uuid.UUID(campaign_id))
+        )
+        campaign = result.scalar_one_or_none()
+        if campaign:
+            campaign.pipeline_status = status
+            await db.commit()
 
 
 @task(name="verify-emails", retries=1)
@@ -124,23 +138,28 @@ async def run_campaign_pipeline(
     logger = get_run_logger()
 
     # Stage 1: Scrape
+    await _set_status(campaign_id, "scraping")
     prospects = await run_scraping_flow(campaign_id, icp_config, batch_size)
     logger.info(f"Scraped {len(prospects)} ICP-filtered prospects")
 
     # Stage 2: Verify emails
+    await _set_status(campaign_id, "verifying")
     verified = await verify_emails(prospects)
     logger.info(f"Email verification: {len(verified)}/{len(prospects)} passed")
 
     # Stage 3: Personalize
+    await _set_status(campaign_id, "personalizing")
     personalized = await personalize_emails(verified, niche, value_prop, language)
     flagged = sum(1 for p in personalized if p["email"].flagged_for_manual)
     logger.info(f"Personalization: {len(personalized)} emails generated, {flagged} flagged for manual")
 
     # Stage 4: Save to DB with review queue assignment
+    await _set_status(campaign_id, "saving")
     email_ids = await save_prospects_and_emails(
         personalized, uuid.UUID(campaign_id), db, review_pct
     )
     logger.info(f"Saved {len(email_ids)} emails to DB")
+    await _set_status(campaign_id, "done")
 
     return {
         "campaign_id": campaign_id,
