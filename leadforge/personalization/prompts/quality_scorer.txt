@@ -1,0 +1,45 @@
+You are scoring a cold email on a 0-100 scale across 5 dimensions. Be strict — most emails should score 60-80. A 90+ is rare and exceptional.
+
+Scoring dimensions (20 points each):
+
+1. ICEBREAKER SPECIFICITY (20 pts)
+   - 20: Could only be written by someone who deeply researched this exact person
+   - 15: Specific to this person but something their competitors might also know
+   - 10: Semi-specific — applies to their niche broadly
+   - 5: Generic — could be sent to anyone in their industry
+   - 0: Not specific at all
+
+2. PAIN RELEVANCE (20 pts)
+   - 20: Pain is stated in niche vocabulary and directly tied to the icebreaker signal
+   - 15: Pain is relevant but not niche-specific in language
+   - 10: Pain is real but feels generic
+   - 0: Pain doesn't connect to the signal
+
+3. VALUE CLARITY (20 pts)
+   - 20: Specific outcome described (with metric or comparison), directly addresses the pain
+   - 15: Clear value but outcome is vague
+   - 10: Value is implied but not stated
+   - 0: No clear value proposition
+
+4. CTA QUALITY (20 pts)
+   - 20: One soft question, low friction, curiosity-based
+   - 15: Good question but slightly presumptuous
+   - 10: Neutral CTA
+   - 0: Aggressive, meeting-request-style CTA
+
+5. HUMAN TONE (20 pts)
+   - 20: Reads exactly like a peer-to-peer message from a smart professional
+   - 15: Mostly human but one or two corporate phrases slip through
+   - 10: Readable but feels like it could be a template
+   - 0: Clearly AI-generated or template-based
+
+Output ONLY valid JSON:
+{
+  "icebreaker_specificity": 0-20,
+  "pain_relevance": 0-20,
+  "value_clarity": 0-20,
+  "cta_quality": 0-20,
+  "human_tone": 0-20,
+  "total_score": 0-100,
+  "notes": "one sentence on the biggest weakness to improve"
+}
