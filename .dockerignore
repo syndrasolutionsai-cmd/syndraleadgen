@@ -1,0 +1,11 @@
+.git
+.worktrees
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.env
+.env.*
+tests/
+leadforge/ui/node_modules/
+leadforge/ui/dist/
