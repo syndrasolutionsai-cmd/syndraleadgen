@@ -1,5 +1,5 @@
 import uuid
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CampaignCreate(BaseModel):
@@ -7,10 +7,10 @@ class CampaignCreate(BaseModel):
     niche: str | None = None
     language: str = "en"
     batch_size: int = 500
-    icp_config: dict = {}
-    scraping_config: dict = {}
-    personalization_config: dict = {}
-    verification_config: dict = {}
+    icp_config: dict = Field(default_factory=dict)
+    scraping_config: dict = Field(default_factory=dict)
+    personalization_config: dict = Field(default_factory=dict)
+    verification_config: dict = Field(default_factory=dict)
 
 
 class CampaignRead(BaseModel):

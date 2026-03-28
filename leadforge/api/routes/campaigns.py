@@ -31,6 +31,6 @@ async def list_campaigns(
     current: Client = Depends(get_current_client),
 ):
     result = await db.execute(
-        select(Campaign).where(Campaign.client_id == current.id, Campaign.is_active == True)
+        select(Campaign).where(Campaign.client_id == current.id, Campaign.is_active.is_(True))
     )
     return result.scalars().all()

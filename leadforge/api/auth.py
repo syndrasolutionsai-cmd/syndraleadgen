@@ -23,4 +23,7 @@ def create_access_token(subject: str) -> str:
 def decode_token(token: str) -> str:
     """Returns the subject (client_id) or raises JWTError."""
     payload = jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
-    return payload["sub"]
+    subject = payload.get("sub")
+    if subject is None:
+        raise JWTError("Missing sub claim")
+    return subject

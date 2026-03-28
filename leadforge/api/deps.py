@@ -23,7 +23,7 @@ async def get_current_client(
     )
     try:
         client_id = decode_token(token)
-    except JWTError:
+    except (JWTError, ValueError):
         raise credentials_exc
 
     result = await db.execute(select(Client).where(Client.id == uuid.UUID(client_id)))

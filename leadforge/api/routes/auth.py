@@ -18,6 +18,12 @@ async def login(
     result = await db.execute(select(Client).where(Client.email == form.username))
     client = result.scalar_one_or_none()
     if not client or not verify_password(form.password, client.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    if not client.is_active:
+        raise HTTPException(status_code=400, detail="Account is disabled")
     token = create_access_token(str(client.id))
     return {"access_token": token, "token_type": "bearer"}
