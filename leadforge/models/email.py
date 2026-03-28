@@ -1,6 +1,6 @@
 import uuid
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import String, DateTime, ForeignKey, Float, Text, Enum as SAEnum, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -31,6 +31,6 @@ class Email(Base):
     opened: Mapped[bool] = mapped_column(Boolean, default=False)
     clicked: Mapped[bool] = mapped_column(Boolean, default=False)
     replied: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     prospect: Mapped["Prospect"] = relationship("Prospect", back_populates="email_record")

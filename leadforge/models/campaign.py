@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import String, DateTime, ForeignKey, Integer, JSON, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -20,7 +20,7 @@ class Campaign(Base):
     personalization_config: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     verification_config: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     client: Mapped["Client"] = relationship("Client", back_populates="campaigns")
     prospects: Mapped[list["Prospect"]] = relationship("Prospect", back_populates="campaign")

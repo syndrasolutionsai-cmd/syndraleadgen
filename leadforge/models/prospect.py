@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import String, DateTime, ForeignKey, Float, JSON, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -24,7 +24,7 @@ class Prospect(Base):
     icp_score: Mapped[float | None] = mapped_column(Float)
     email_verification_score: Mapped[float | None] = mapped_column(Float)
     confirmed_sources: Mapped[list] = mapped_column(JSON, default=list)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     campaign: Mapped["Campaign"] = relationship("Campaign", back_populates="prospects")
     email_record: Mapped["Email | None"] = relationship("Email", back_populates="prospect", uselist=False)
