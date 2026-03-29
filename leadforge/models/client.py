@@ -15,6 +15,7 @@ class Client(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     instantly_api_key_enc: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(default=True)
+    is_admin: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     campaigns: Mapped[list["Campaign"]] = relationship("Campaign", back_populates="client")

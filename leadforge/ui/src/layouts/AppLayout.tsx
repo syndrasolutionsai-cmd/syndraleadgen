@@ -89,13 +89,17 @@ export function AppLayout() {
             </svg>
           } />
 
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 pt-4 mb-2">Admin</p>
-          <NavItem to="/clients" label="Clients" icon={
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-          } />
+          {me?.is_admin && (
+            <>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 pt-4 mb-2">Admin</p>
+              <NavItem to="/clients" label="Clients" icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+              } />
+            </>
+          )}
           <NavItem to="/settings" label="Settings" icon={
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <circle cx="12" cy="12" r="3"/>

@@ -59,5 +59,7 @@ async def list_all_clients(
     db: AsyncSession = Depends(get_db),
 ):
     """Admin: list all client accounts."""
+    if not current.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
     result = await db.execute(select(Client).order_by(Client.created_at.desc()))
     return result.scalars().all()

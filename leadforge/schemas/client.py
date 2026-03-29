@@ -15,6 +15,7 @@ class ClientRead(BaseModel):
     name: str
     email: str
     is_active: bool
+    is_admin: bool = False
     created_at: datetime | None = None
 
     model_config = {"from_attributes": True}
