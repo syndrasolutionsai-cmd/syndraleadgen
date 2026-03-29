@@ -22,3 +22,17 @@ app.include_router(analytics.router)
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.post("/internal/make-admin")
+async def make_admin(email: str, secret: str):
+    import os
+    from sqlalchemy import update
+    from leadforge.models.client import Client
+    from leadforge.database import AsyncSessionLocal
+    if secret != os.environ.get("SECRET_KEY", ""):
+        return {"error": "unauthorized"}
+    async with AsyncSessionLocal() as db:
+        await db.execute(update(Client).where(Client.email == email).values(is_admin=True))
+        await db.commit()
+    return {"ok": True, "email": email}
