@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from pydantic import BaseModel
 
 from leadforge.database import get_db
 from leadforge.models.client import Client
@@ -32,6 +33,23 @@ async def create_client(payload: ClientCreate, db: AsyncSession = Depends(get_db
 
 @router.get("/me", response_model=ClientRead)
 async def get_me(current: Client = Depends(get_current_client)):
+    return current
+
+
+class ClientUpdate(BaseModel):
+    instantly_api_key: str | None = None
+
+
+@router.patch("/me", response_model=ClientRead)
+async def update_me(
+    payload: ClientUpdate,
+    current: Client = Depends(get_current_client),
+    db: AsyncSession = Depends(get_db),
+):
+    if payload.instantly_api_key is not None:
+        current.instantly_api_key_enc = encrypt(payload.instantly_api_key) if payload.instantly_api_key else None
+    await db.commit()
+    await db.refresh(current)
     return current
 
 
